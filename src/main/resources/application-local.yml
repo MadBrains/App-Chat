@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/app_chat
+    username: app_chat
+    password: password
+  mail:
+    username: YOUR_EMAIL
+    password: YOUR_PASSWORD
+  jpa:
+    show-sql: true
+
+app:
+  base-url: http://localhost:8080
+  jwt:
+    secret-key: appChat
+    expiration-time:
+      access-token: 600000
+      refresh-token: 60000000

@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  liquibase:
+    change-log: db/changelog/db.changelog-master.yaml
+    enabled: true
+
+app:
+  base-url: http://localhost:8080
+  invite-link: ${app.base-url}/auth/accept
+  invite-expiration-days: 10
+  jwt:
+    secret-key: ${APP_JWT_SECRETKEY}
+    expiration-time:
+      access-token: 600000
+      refresh-token: 60000000

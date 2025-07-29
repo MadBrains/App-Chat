@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # База данных PostgreSQL
+  postgres:
+    image: postgres:15.6-alpine
+    container_name: app_chat-postgres
+    environment:
+      POSTGRES_DB: app_chat
+      POSTGRES_USER: app_chat
+      POSTGRES_PASSWORD: JKrXYa3Qbph7sa5
+    volumes:
+      - ./volumes/pgdata:/var/lib/postgresql/data
+      - ./init/postgres:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - chat-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+
+networks:
+  chat-network:
+    driver: bridge

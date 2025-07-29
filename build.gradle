@@ -1,0 +1,79 @@
+plugins {
+    id 'org.springframework.boot' version '3.0.0'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'java'
+}
+
+group = 'com'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+ext {
+    jwtVersion = "4.2.1"
+    springFOXVersion = "3.0.0"
+    liquibaseVersion = '4.17.2'
+    mapstructVersion = "1.5.3.Final"
+    lombokVersion = "1.18.24"
+    lombokMapstructBindingVersion = "0.2.0"
+    springSecurity = "6.0.1"
+    passayVersion = "1.6.2"
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //Spring
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    //Netty
+    implementation "io.projectreactor.netty:reactor-netty"
+    implementation "io.netty:netty-all"
+    //Websocket
+    implementation "org.springframework.boot:spring-boot-starter-websocket"
+    implementation "org.springframework.security:spring-security-messaging"
+    //JWT
+    implementation "com.auth0:java-jwt:${jwtVersion}"
+    implementation "org.springframework.security:spring-security-oauth2-resource-server:${springSecurity}"
+    //swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.4'
+    //RDBC
+    implementation 'org.postgresql:postgresql'
+    //Migration
+    implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+    //Utils
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation "org.passay:passay:${passayVersion}"
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    compileOnly "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+    //Tests
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    //JS
+    implementation "org.webjars:webjars-locator-core"
+    implementation "org.webjars:sockjs-client:1.5.1"
+    implementation "org.webjars:stomp-websocket:2.3.4"
+    implementation "org.webjars:bootstrap:5.2.3"
+    implementation 'org.webjars:jquery:3.6.2'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
