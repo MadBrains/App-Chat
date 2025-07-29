@@ -1,92 +1,186 @@
-# App Chat
+# AppChat
+![Java 17](https://img.shields.io/badge/Java-17-brightgreen)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-brightgreen)
+![License](https://img.shields.io/badge/License-GPLv3-blue)
 
+---
 
+Корпоративное веб-приложение для общения с поддержкой приватных и групповых чатов, гибкой ролевой модели, безопасной аутентификацией и WebSocket-уведомлениями.
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 📌 Назначение
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+AppChat предназначен для обмена сообщениями между пользователями внутри организации. Поддерживаются роли, права, локализация, журналирование изменений и работа в реальном времени через WebSocket.
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## 🛠 Технологии
+
+- Java 17, Spring Boot
+- Spring Security (JWT)
+- STOMP/WebSocket + SockJS
+- Liquibase
+- JPA (Hibernate)
+- PostgreSQL
+- OpenAPI (SpringDoc)
+- Lombok, MapStruct
+- Passay (валидация паролей)
+- i18n (русский, английский)
+- SMTP Email (Gmail)
+
+---
+
+## ⚙️ Требования
+
+- Java 17
+- PostgreSQL 14+
+- Gradle 8+
+- SMTP-учётные данные
+- Порты: `8080` (HTTP), `5432` (PostgreSQL)
+
+---
+
+## ⚙️ Конфигурация
+
+Пример `.env`:
+```env
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/appchat
+SPRING_DATASOURCE_USERNAME=admin
+SPRING_DATASOURCE_PASSWORD=secret
+SPRING_MAIL_USERNAME=youremail@gmail.com
+SPRING_MAIL_PASSWORD=emailpassword
+APP_JWT_SECRETKEY=your_secure_key
+```
+
+> ⚠️ Для Gmail может потребоваться включить "менее безопасные приложения" или использовать App Password.
+
+---
+
+## 🧩 Архитектура
+
+- REST API: пользователи, роли, чаты, сообщения, права
+- WebSocket API: сообщения, печать, прочтение, изменение темы
+- Сервисный слой с транзакциями
+- Журналирование действий (`change_log`, `entity_info`)
+- Ролевая модель и `ExtendedPermissionType`
+
+---
+
+## 🔐 Аутентификация
+
+- JWT + Refresh токены
+- Фильтры безопасности
+- Поддержка `CLIENT` и `WORKER`
+- Индивидуальные расширенные права пользователя
+
+---
+
+## 💬 Чаты и сообщения
+
+- Приватные и групповые чаты
+- Администраторы чатов
+- Темы, иконки, уведомления
+- Поддержка reply, read-status
+- Уведомления через WebSocket
+
+---
+
+## 🗂 Модель данных
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/madbrains/mad-chat/app-chat.git
-git branch -M main
-git push -uf origin main
+[User] ↔ [Role]       (ManyToMany)
+[Role] ↔ [Permission] (ManyToMany)
+[Chat] → [ChatMember] → [User] (ManyToMany через ассоциацию)
+[Chat] → [Message]    (OneToMany)
 ```
 
-## Integrate with your tools
+---
 
-- [ ] [Set up project integrations](https://gitlab.com/madbrains/mad-chat/app-chat/-/settings/integrations)
+## 🔄 Liquibase
 
-## Collaborate with your team
+- Конфигурация: `db/changelog/db.changelog-master.yaml`
+- Версионированные миграции
+- Начальные данные: роли, права, администратор
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+Применение миграций:
+```bash
+./gradlew liquibaseUpdate
+```
 
-## Test and Deploy
+---
 
-Use the built-in continuous integration in GitLab.
+## 🌐 Локализация
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+- Языки: русский, английский
+- Язык определяется заголовком `Accept-Language`
+- Файлы: `messages_ru.properties`, `messages_en.properties`
 
-***
+Добавление языка:
+1. Добавить `messages_XX.properties` в `resources/messages`
+2. Перезапустить приложение
 
-# Editing this README
+---
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+## 🧪 Тестирование
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+```bash
+./gradlew test
+```
 
-## Name
-Choose a self-explaining name for your project.
+---
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## 🚀 Сборка и запуск
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```bash
+./gradlew bootRun
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+С переменными окружения:
+```bash
+SPRING_DATASOURCE_URL=... SPRING_DATASOURCE_USERNAME=... \
+SPRING_DATASOURCE_PASSWORD=... SPRING_MAIL_USERNAME=... \
+SPRING_MAIL_PASSWORD=... APP_JWT_SECRETKEY=... \
+./gradlew bootRun
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+---
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## 🧰 Первый запуск
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+- Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- Администратор по умолчанию:
+    - Email: `testtest@gmail.test`
+    - Пароль: `password`
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+---
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+## 🔌 WebSocket
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+- Endpoint: `/ws-chat`
+- Заголовок: `Authorization: Bearer <token>`
+- Топики:
+    - `/topic/messages/{chatId}`
+    - `/user/queue/typing`
+    - `/socket/app`
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Пример подписки:
+```javascript
+stompClient.subscribe('/topic/messages/123', (message) => {
+  console.log('New message:', JSON.parse(message.body));
+});
+```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+---
 
-## License
-For open source projects, say how it is licensed.
+## 📚 Документация API
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- Авторизация через JWT
+- Группировка: `app-chat-api`
+
+---
+
+## 📜 Лицензия
+
+Данный проект опубликован под стандартной общественной лицензией GNU GPLv3. Вы можете модифицировать и использовать наши наработки в своих проектах, в т.ч. коммерческих, при обязательном условии публикации их исходного кода. Также мы готовы рассмотреть ваши Pull requests, если вы хотите чтобы наш проект развивался с учётом ваших модификаций и доработок.

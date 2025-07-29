@@ -8,10 +8,9 @@ services:
     environment:
       POSTGRES_DB: app_chat
       POSTGRES_USER: app_chat
-      POSTGRES_PASSWORD: JKrXYa3Qbph7sa5
+      POSTGRES_PASSWORD: PASSWORD
     volumes:
       - ./volumes/pgdata:/var/lib/postgresql/data
-      - ./init/postgres:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
