@@ -1,11 +1,30 @@
-# AppChat
-![Java 17](https://img.shields.io/badge/Java-17-brightgreen)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-brightgreen)
-![License](https://img.shields.io/badge/License-GPLv3-blue)
+<a href="https://madbrains.ru/?utm_source=gthb"><img src="docs/banner.png"/></a>
+<img align="left" src="docs/info.png" width="480" height="360"/></a>
+
+<p><h1 align="left" style="border-bottom: none">App Chat</h1></p>
+
+<h4>Корпоративное веб-приложение для общения с поддержкой приватных и групповых чатов,
+гибкой ролевой модели, безопасной аутентификацией и WebSocket-уведомлениями.</h4>
+
+
+<p>
+<a href="https://madbrains.ru/?utm_source=gthb">
+<img src="docs/get_started_stroke.png" width="249" height="45"></a>
+</p>
+
+<!-- Футер -->
+<div>
+  <h5>Подписаться:</h5>
+  <a href="https://github.com/MadBrains">
+    <img src="docs/follow_us_stroke.png" width="138" height="26" alt="Follow us" />
+  </a>
+</div>
 
 ---
 
-Корпоративное веб-приложение для общения с поддержкой приватных и групповых чатов, гибкой ролевой модели, безопасной аутентификацией и WebSocket-уведомлениями.
+![Java 17](https://img.shields.io/badge/Java-17-brightgreen)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-unknown-brightgreen)
+![License](https://img.shields.io/badge/License-GPLv3-blue)
 
 ---
 
@@ -28,6 +47,7 @@ AppChat предназначен для обмена сообщениями ме
 - Passay (валидация паролей)
 - i18n (русский, английский)
 - SMTP Email (Gmail)
+- React + Vite (фронтенд)
 
 ---
 
@@ -37,7 +57,7 @@ AppChat предназначен для обмена сообщениями ме
 - PostgreSQL 14+
 - Gradle 8+
 - SMTP-учётные данные
-- Порты: `8080` (HTTP), `5432` (PostgreSQL)
+- Порты: `8080` (HTTP), `5432` (PostgreSQL), `3000` (frontend)
 
 ---
 
@@ -64,6 +84,7 @@ APP_JWT_SECRETKEY=your_secure_key
 - Сервисный слой с транзакциями
 - Журналирование действий (`change_log`, `entity_info`)
 - Ролевая модель и `ExtendedPermissionType`
+- Отдельный React frontend (`frontend/`)
 
 ---
 
@@ -130,7 +151,7 @@ APP_JWT_SECRETKEY=your_secure_key
 
 ---
 
-## 🚀 Сборка и запуск
+## 🚀 Сборка и запуск вручную
 
 ```bash
 ./gradlew bootRun
@@ -138,20 +159,36 @@ APP_JWT_SECRETKEY=your_secure_key
 
 С переменными окружения:
 ```bash
-SPRING_DATASOURCE_URL=... SPRING_DATASOURCE_USERNAME=... \
-SPRING_DATASOURCE_PASSWORD=... SPRING_MAIL_USERNAME=... \
-SPRING_MAIL_PASSWORD=... APP_JWT_SECRETKEY=... \
-./gradlew bootRun
+SPRING_DATASOURCE_URL=... SPRING_DATASOURCE_USERNAME=... SPRING_DATASOURCE_PASSWORD=... SPRING_MAIL_USERNAME=... SPRING_MAIL_PASSWORD=... APP_JWT_SECRETKEY=... ./gradlew bootRun
 ```
+
+---
+
+## 🐳 Запуск через Docker Compose
+
+```bash
+docker-compose up --build
+```
+
+Структура:
+- `backend/` — Spring Boot приложение
+- `frontend/` — React-приложение
+- `postgres` — база данных PostgreSQL
+
+Примерный список портов:
+- `8080` — backend API
+- `3000` — frontend
+- `5432` — PostgreSQL
 
 ---
 
 ## 🧰 Первый запуск
 
 - Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- Frontend UI: [http://localhost:3000/](http://localhost:3000)
 - Администратор по умолчанию:
-    - Email: `testtest@gmail.test`
-    - Пароль: `password`
+  - Email: `testtest@gmail.test`
+  - Пароль: `password`
 
 ---
 
@@ -160,9 +197,9 @@ SPRING_MAIL_PASSWORD=... APP_JWT_SECRETKEY=... \
 - Endpoint: `/ws-chat`
 - Заголовок: `Authorization: Bearer <token>`
 - Топики:
-    - `/topic/messages/{chatId}`
-    - `/user/queue/typing`
-    - `/socket/app`
+  - `/topic/messages/{chatId}`
+  - `/user/queue/typing`
+  - `/socket/app`
 
 Пример подписки:
 ```javascript
@@ -181,6 +218,13 @@ stompClient.subscribe('/topic/messages/123', (message) => {
 
 ---
 
-## 📜 Лицензия
+## Лицензия
 
-Данный проект опубликован под стандартной общественной лицензией GNU GPLv3. Вы можете модифицировать и использовать наши наработки в своих проектах, в т.ч. коммерческих, при обязательном условии публикации их исходного кода. Также мы готовы рассмотреть ваши Pull requests, если вы хотите чтобы наш проект развивался с учётом ваших модификаций и доработок.
+Проект распространяется по двойной лицензии:
+
+- **GNU GPLv3** — свободно для open-source и некоммерческого использования
+- **Коммерческая лицензия** — для коммерческого применения, включения в проприетарные продукты или использования вне условий GPL
+
+📩 По вопросам коммерческого использования и получения лицензии — пишите на **hello@madbrains.ru**
+
+Подробнее — см. файлы [`LICENSE`](./LICENSE) и [`COMMERCIAL-LICENSE.md`](./COMMERCIAL-LICENSE.md)

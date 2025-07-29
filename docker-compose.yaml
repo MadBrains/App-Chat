@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # База данных PostgreSQL
   postgres:
     image: postgres:15.6-alpine
     container_name: app_chat-postgres
@@ -16,10 +15,43 @@ services:
     networks:
       - chat-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U app_chat"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: app_chat-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/app_chat
+      SPRING_DATASOURCE_USERNAME: app_chat
+      SPRING_DATASOURCE_PASSWORD: PASSWORD
+      SPRING_MAIL_USERNAME: testtest@gmail.test
+      SPRING_MAIL_PASSWORD: PASSWORD
+      APP_JWT_SECRETKEY: your_secure_key
+    ports:
+      - "8080:8080"
+    networks:
+      - chat-network
+
+
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: app_chat-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - chat-network
 
 volumes:
   pgdata:
